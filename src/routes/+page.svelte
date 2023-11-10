@@ -10,7 +10,8 @@
 	import Target from '../Target.svelte';
 
 	// Level editor stuff
-	export const isLevelEditorEnabled = false;
+	const urlParams = new URLSearchParams(window.location.search);
+	export const isLevelEditorEnabled = urlParams.has('enableLevelEditor');
 	let levelEditor: LevelSpec = { targets: [], rects: [] };
 
 	const CELL_SIZE = 30;
