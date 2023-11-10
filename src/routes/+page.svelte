@@ -51,6 +51,7 @@
 
 	function reset() {
 		currentLevel = currentLevel;
+		levelEditor = { targets: [], rects: [] };
 	}
 
 	function isValidSelection(selection: XYSelection) {
@@ -111,10 +112,7 @@
 		if (isValidSelection(tempSelection)) {
 			currentSelection.updateFrom(tempSelection);
 		} else {
-			// Try updating the X coordinate only.
-			let y = end.y > start.y ? currentSelection.maxY : currentSelection.minY;
-
-			tempSelection.update(start, { x: end.x, y });
+			tempSelection.update(start, { x: end.x, y: currentSelection.endY });
 			if (isValidSelection(tempSelection)) {
 				currentSelection.updateFrom(tempSelection);
 			} else {
@@ -152,9 +150,9 @@
 		if (isLevelEditorEnabled) {
 			levelEditor.targets.push(currentSelection.size);
 			levelEditor.rects.push([
-				currentSelection.startX,
+				currentSelection.minX,
 				currentSelection.minY,
-				currentSelection.endX,
+				currentSelection.maxX,
 				currentSelection.maxY
 			]);
 
