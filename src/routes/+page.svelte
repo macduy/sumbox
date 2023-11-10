@@ -100,15 +100,7 @@
 <div class="wrapper">
 	{#each grid as row, x}
 		{#each row as cellData, y}
-			<Cell
-				{x}
-				{y}
-				active={cellData.selected}
-				off={cellData.type === 'off'}
-				on:down={() => onCellDown(x, y)}
-				on:move={() => onCellMove(x, y)}
-				on:up={() => onCellUp(x, y)}
-			/>
+			<Cell {x} {y} active={cellData.selected} off={cellData.type === 'off'} />
 		{/each}
 	{/each}
 	<div
