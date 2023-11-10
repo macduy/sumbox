@@ -1,17 +1,17 @@
 /** Represents a selection the grid. */
 export class XYSelection {
 	constructor(
-		public minX: number = 0,
-		public maxX: number = 0,
+		public startX: number = 0,
+		public endX: number = 0,
 		public minY: number = -1,
 		public maxY: number = -1
 	) {}
 
 	update(start: { x: number; y: number }, end: { x: number; y: number }) {
-		this.minX = start.x;
-		this.minY = start.y;
-		this.maxX = end.x;
-		this.maxY = end.y;
+		this.startX = start.x;
+		this.minY = Math.min(start.y, end.y);
+		this.endX = end.x;
+		this.maxY = Math.max(start.y, end.y);
 	}
 
 	reset() {
@@ -19,7 +19,7 @@ export class XYSelection {
 	}
 
 	get isEmpty(): boolean {
-		if (this.maxX < this.minX || this.maxY < this.minY) {
+		if (this.endX < this.startX) {
 			return true;
 		}
 		return false;
@@ -29,19 +29,19 @@ export class XYSelection {
 		if (this.isEmpty) {
 			return 0;
 		}
-		return (this.maxX - this.minX + 1) * (this.maxY - this.minY + 1);
+		return (this.endX - this.startX + 1) * (this.maxY - this.minY + 1);
 	}
 
 	get isSquare(): boolean {
-		return this.maxX - this.minX === this.maxY - this.minY;
+		return this.endX - this.startX === this.maxY - this.minY;
 	}
 
 	contains(x: number, y: number): boolean {
-		return x >= this.minX && x <= this.maxX && y >= this.minY && y <= this.maxY;
+		return x >= this.startX && x <= this.endX && y >= this.minY && y <= this.maxY;
 	}
 
 	iterate(callback: (x: number, y: number) => void) {
-		for (let x = this.minX; x <= this.maxX; x++) {
+		for (let x = this.startX; x <= this.endX; x++) {
 			for (let y = this.minY; y <= this.maxY; y++) {
 				callback(x, y);
 			}
