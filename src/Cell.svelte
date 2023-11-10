@@ -24,7 +24,7 @@
 	}
 </script>
 
-<div class="box {stateClass}" class:showSize={size > 0} role="none">
+<div class="box inline-block align-middle {stateClass}" class:showSize={size > 0} role="none">
 	{#if size > 0}
 		{size}
 	{/if}
@@ -32,7 +32,8 @@
 
 <style>
 	.box {
-		border-radius: 8px;
+		pointer-events: none;
+		border-radius: 12px;
 		user-select: none;
 		background-color: white;
 		width: 30px;
@@ -45,6 +46,7 @@
 	}
 
 	.off {
+		border-radius: 0px;
 		transform: scale(0);
 	}
 

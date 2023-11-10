@@ -1,50 +1,45 @@
 <script lang="ts">
+	import { X, Y } from '$lib/consts';
+	import { LEVELS, LEVEL_EDITOR_META } from '$lib/levels';
 	import type { CellData } from '$lib/types/cell';
+	import { setupGame, type LevelSpec } from '$lib/types/level';
 	import { XYSelection } from '$lib/types/selection';
 	import type { TargetData } from '$lib/types/target';
 
 	import Cell from '../Cell.svelte';
 	import Target from '../Target.svelte';
 
-	const X = 10;
-	const Y = 10;
+	// Level editor stuff
+	export const isLevelEditorEnabled = false;
+	let levelEditor: LevelSpec = { targets: [], rects: [] };
 
 	const CELL_SIZE = 30;
 	const GRID_HEIGHT = CELL_SIZE * Y;
 	const GRID_WIDTH = CELL_SIZE * X;
 
-	const initialSetup = [new XYSelection(1, 3, 5, 8), new XYSelection(5, 1, 8, 6)];
-
 	// Whether the current selection matches any targets.
 	let matchingTarget = false;
 
-	let grid: CellData[][] = [];
+	let currentLevel: LevelSpec = isLevelEditorEnabled ? LEVEL_EDITOR_META : LEVELS[0];
 
-	let targets: TargetData[] = [
-		{ value: 16, match: false, completed: false },
-		{ value: 10, match: false, completed: false },
-		{ value: 24, match: false, completed: false }
-	];
-
-	for (let i = 0; i < X; i++) {
-		grid[i] = [];
-		for (let j = 0; j < Y; j++) {
-			let on = false;
-
-			for (const rects of initialSetup) {
-				if (rects.contains(i, j)) {
-					on = true;
-					break;
-				}
-			}
-
-			grid[i][j] = {
-				on,
-				removed: false,
-				selected: false
-			};
-		}
+	$: {
+		setupGameFor(currentLevel);
+		forceRefresh();
 	}
+
+	function forceRefresh() {
+		grid = grid;
+		targets = targets;
+	}
+
+	function setupGameFor(level: LevelSpec) {
+		console.log('Setup game');
+		setupGame(level, grid, targets);
+	}
+
+	// Game state
+	let grid: CellData[][] = [];
+	let targets: TargetData[] = [];
 
 	let start: { x: number; y: number };
 	let end: { x: number; y: number };
@@ -52,6 +47,10 @@
 	let isDown: boolean = false;
 
 	let currentSelection: XYSelection = new XYSelection();
+
+	function reset() {
+		currentLevel = currentLevel;
+	}
 
 	function isValidSelection(selection: XYSelection) {
 		let isValid = true;
@@ -73,7 +72,8 @@
 
 		// Check targets.
 		const size = currentSelection.size;
-		let foundMatch: boolean = false;
+		// If level editor is on, any size is allowed.
+		let foundMatch: boolean = isLevelEditorEnabled;
 		for (let target of targets) {
 			if (target.completed) {
 				continue;
@@ -90,7 +90,6 @@
 	}
 
 	function onCellDown(x: number, y: number) {
-		console.log(x, y);
 		isDown = true;
 		start = { x, y };
 		end = { x, y };
@@ -108,7 +107,6 @@
 		// Validate selection first. Only update the selection if it's valid.
 		const tempSelection = currentSelection.copy();
 		tempSelection.update(start, end);
-		console.log(tempSelection, currentSelection);
 		if (isValidSelection(tempSelection)) {
 			currentSelection.updateFrom(tempSelection);
 		} else {
@@ -135,8 +133,8 @@
 	function onCellUp() {
 		isDown = false;
 
-		// Resolve targets.
-		let matchFound = false;
+		// Resolve targets. If level editor is on, any selection is allowed.
+		let matchFound = isLevelEditorEnabled;
 		for (let target of targets) {
 			if (target.match) {
 				target.completed = true;
@@ -148,6 +146,18 @@
 		if (matchFound) {
 			// Remove the cells.
 			currentSelection.iterate((x, y) => (grid[x][y].removed = true));
+		}
+
+		if (isLevelEditorEnabled) {
+			levelEditor.targets.push(currentSelection.size);
+			levelEditor.rects.push([
+				currentSelection.startX,
+				currentSelection.minY,
+				currentSelection.endX,
+				currentSelection.maxY
+			]);
+
+			levelEditor = levelEditor;
 		}
 
 		currentSelection.reset();
@@ -221,9 +231,24 @@
 	/>
 </div>
 
-{#key currentSelection}
-	<div>{JSON.stringify(currentSelection)}</div>
-{/key}
+<div class="flex justify-center gap-2">
+	<button
+		class="bg-transparent text-blue-700 font-semibold py-2 px-4 border border-blue-500 rounded"
+		on:click={reset}>Reset</button
+	>
+	{#each LEVELS as level, i (i)}
+		<button
+			class="bg-transparent text-blue-700 font-semibold py-2 px-4 border border-blue-500 rounded"
+			on:click={() => (currentLevel = level)}>Level {i + 1}</button
+		>
+	{/each}
+</div>
+
+{#if isLevelEditorEnabled}
+	<pre>
+	{JSON.stringify(levelEditor)}
+	</pre>
+{/if}
 
 <style>
 	.wrapper {
