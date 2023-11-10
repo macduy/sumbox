@@ -63,7 +63,7 @@
 		updateGridSelection();
 	}
 
-	function onCellUp(x: number, y: number) {
+	function onCellUp() {
 		isDown = false;
 
 		currentSelection.iterate((x, y) => (grid[x][y].type = 'off'));
@@ -121,7 +121,7 @@
 			onCellMove(...convertToCellCoords(e));
 		}}
 		on:mouseup={(e) => {
-			onCellUp(...convertToCellCoords(e));
+			onCellUp();
 		}}
 		on:touchstart={(e) => {
 			onCellDown(...convertTouchToCellCoords(e));
@@ -130,7 +130,8 @@
 			onCellMove(...convertTouchToCellCoords(e));
 		}}
 		on:touchend={(e) => {
-			onCellUp(...convertTouchToCellCoords(e));
+			console.log(e);
+			onCellUp();
 		}}
 	/>
 </div>
