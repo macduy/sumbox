@@ -3,7 +3,8 @@
 
 	export let x: number;
 	export let y: number;
-	export let isActive: boolean;
+	export let active: boolean;
+	export let off: boolean;
 
 	const dispatch = createEventDispatcher();
 
@@ -23,7 +24,8 @@
 <div
 	class="box"
 	role="none"
-	class:active={isActive}
+	class:active
+	class:off
 	on:mousedown={onDown}
 	on:mousemove={onMove}
 	on:mouseup={onUp}
@@ -40,5 +42,9 @@
 
 	.active {
 		background-color: yellow;
+	}
+
+	.off {
+		background-color: white;
 	}
 </style>
