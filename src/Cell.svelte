@@ -1,11 +1,17 @@
 <script lang="ts">
+	import type { CellData } from '$lib/types/cell';
+
 	export let x: number;
 	export let y: number;
-	export let active: boolean;
-	export let off: boolean;
+	export let cellData: CellData;
 </script>
 
-<div class="box" role="none" class:active class:off />
+<div
+	class="box"
+	role="none"
+	class:active={cellData.on && cellData.selected}
+	class:off={!cellData.on || cellData.removed}
+/>
 
 <style>
 	.box {
