@@ -1,59 +1,68 @@
-<script>
-	import Counter from './Counter.svelte';
-	import welcome from '$lib/images/svelte-welcome.webp';
-	import welcome_fallback from '$lib/images/svelte-welcome.png';
+<script lang="ts">
+	import { XYSelection } from '$lib/types/selection';
+	import Cell from '../Cell.svelte';
+
+	let start: { x: number; y: number };
+	let end: { x: number; y: number };
+
+	let update = 0;
+
+	let isDown: boolean = false;
+
+	let currentSelection: XYSelection = new XYSelection();
+
+	function onCellDown(x: number, y: number) {
+		isDown = true;
+		start = { x, y };
+		end = { x, y };
+		currentSelection.update(start, start);
+		update++;
+	}
+
+	function onCellMove(x: number, y: number) {
+		if (!isDown) {
+			return;
+		}
+
+		end = { x, y };
+		currentSelection.update(start, end);
+		update++;
+	}
+
+	function onCellUp(x: number, y: number) {
+		isDown = false;
+		currentSelection.reset();
+		update++;
+	}
+
+	function isActive(x: number, y: number) {
+		return currentSelection.contains(x, y);
+	}
 </script>
 
-<svelte:head>
-	<title>Home</title>
-	<meta name="description" content="Svelte demo app" />
-</svelte:head>
-
-<section>
-	<h1>
-		<span class="welcome">
-			<picture>
-				<source srcset={welcome} type="image/webp" />
-				<img src={welcome_fallback} alt="Welcome" />
-			</picture>
-		</span>
-
-		to your new<br />SvelteKit app
-	</h1>
-
-	<h2>
-		try editing <strong>src/routes/+page.svelte</strong>
-	</h2>
-
-	<Counter />
-</section>
+{#key update}
+	<div class="wrapper">
+		{#each Array(10) as _, y (y)}
+			{#each Array(10) as _, x (x)}
+				<Cell
+					{x}
+					{y}
+					isActive={isActive(x, y)}
+					on:down={() => onCellDown(x, y)}
+					on:move={() => onCellMove(x, y)}
+					on:up={() => onCellUp(x, y)}
+				/>
+			{/each}
+		{/each}
+	</div>
+{/key}
 
 <style>
-	section {
-		display: flex;
-		flex-direction: column;
-		justify-content: center;
-		align-items: center;
-		flex: 0.6;
-	}
-
-	h1 {
-		width: 100%;
-	}
-
-	.welcome {
-		display: block;
-		position: relative;
-		width: 100%;
-		height: 0;
-		padding: 0 0 calc(100% * 495 / 2048) 0;
-	}
-
-	.welcome img {
-		position: absolute;
-		width: 100%;
-		height: 100%;
-		top: 0;
-		display: block;
+	.wrapper {
+		margin: 20px auto;
+		display: grid;
+		border: 1px solid red;
+		width: 200px;
+		grid-template-columns: repeat(10, 1fr);
 	}
 </style>
