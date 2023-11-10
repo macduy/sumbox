@@ -1,5 +1,8 @@
 <script lang="ts">
+	import type { CellData } from '$lib/types/cell';
 	import { XYSelection } from '$lib/types/selection';
+	import type { TargetData } from '$lib/types/target';
+	import { circOut } from 'svelte/easing';
 	import Cell from '../Cell.svelte';
 
 	const X = 10;
@@ -9,18 +12,20 @@
 	const GRID_HEIGHT = CELL_SIZE * Y;
 	const GRID_WIDTH = CELL_SIZE * X;
 
-	type CellData = {
-		type: 'off' | 'on' | 'removed';
-		selected: boolean;
-	};
-
 	let grid: CellData[][] = [];
+
+	let targets: TargetData[] = [
+		{ value: 16, match: false, completed: false },
+		{ value: 10, match: false, completed: false },
+		{ value: 24, match: false, completed: false }
+	];
 
 	for (let i = 0; i < X; i++) {
 		grid[i] = [];
 		for (let j = 0; j < Y; j++) {
 			grid[i][j] = {
-				type: 'on',
+				on: true,
+				removed: false,
 				selected: false
 			};
 		}
@@ -34,7 +39,6 @@
 	let currentSelection: XYSelection = new XYSelection();
 
 	function updateGridSelection() {
-		console.log('update');
 		for (let i = 0; i < X; i++) {
 			for (let j = 0; j < Y; j++) {
 				grid[i][j].selected = currentSelection.contains(i, j);
@@ -60,13 +64,39 @@
 		end = { x, y };
 		currentSelection.update(start, end);
 
+		// Update targets
+		const size = currentSelection.size;
+		let foundMatch: boolean = false;
+		for (let target of targets) {
+			if (target.completed) {
+				continue;
+			}
+			if (!foundMatch && target.value == size) {
+				target.match = true;
+				foundMatch = true;
+			} else {
+				target.match = false;
+			}
+		}
+		targets = targets;
+
 		updateGridSelection();
 	}
 
 	function onCellUp() {
 		isDown = false;
 
-		currentSelection.iterate((x, y) => (grid[x][y].type = 'off'));
+		currentSelection.iterate((x, y) => (grid[x][y].removed = true));
+
+		// Resolve targets.
+		let matchFound = false;
+		for (let target of targets) {
+			if (target.match) {
+				target.completed = true;
+				matchFound = true;
+			}
+			target.match = false;
+		}
 
 		currentSelection.reset();
 		updateGridSelection();
@@ -96,11 +126,10 @@
 	}
 </script>
 
-<!-- {#key update} -->
 <div class="wrapper">
 	{#each grid as row, x}
 		{#each row as cellData, y}
-			<Cell {x} {y} active={cellData.selected} off={cellData.type === 'off'} />
+			<Cell {x} {y} {cellData} />
 		{/each}
 	{/each}
 	<div
@@ -128,7 +157,11 @@
 	/>
 </div>
 
-<!-- {/key} -->
+<div>
+	{#each targets as target, i (target)}
+		<div>{target.value} {target.match}</div>
+	{/each}
+</div>
 
 <style>
 	.wrapper {
