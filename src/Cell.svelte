@@ -29,6 +29,9 @@
 	on:mousedown={onDown}
 	on:mousemove={onMove}
 	on:mouseup={onUp}
+	on:touchstart={onDown}
+	on:touchmove={onMove}
+	on:touchend={onUp}
 />
 
 <style>
