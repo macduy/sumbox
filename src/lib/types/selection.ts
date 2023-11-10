@@ -2,8 +2,8 @@
 export class XYSelection {
 	constructor(
 		public startX: number = 0,
-		public endX: number = 0,
 		public minY: number = -1,
+		public endX: number = 0,
 		public maxY: number = -1
 	) {}
 
@@ -12,6 +12,17 @@ export class XYSelection {
 		this.minY = Math.min(start.y, end.y);
 		this.endX = end.x;
 		this.maxY = Math.max(start.y, end.y);
+	}
+
+	copy(): XYSelection {
+		return new XYSelection(this.startX, this.endX, this.minY, this.minY);
+	}
+
+	updateFrom(selection: XYSelection) {
+		this.startX = selection.startX;
+		this.endX = selection.endX;
+		this.minY = selection.minY;
+		this.maxY = selection.maxY;
 	}
 
 	reset() {

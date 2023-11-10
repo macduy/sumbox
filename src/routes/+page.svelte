@@ -2,15 +2,21 @@
 	import type { CellData } from '$lib/types/cell';
 	import { XYSelection } from '$lib/types/selection';
 	import type { TargetData } from '$lib/types/target';
-	import { circOut } from 'svelte/easing';
+
 	import Cell from '../Cell.svelte';
+	import Target from '../Target.svelte';
 
 	const X = 10;
 	const Y = 10;
 
-	const CELL_SIZE = 20;
+	const CELL_SIZE = 30;
 	const GRID_HEIGHT = CELL_SIZE * Y;
 	const GRID_WIDTH = CELL_SIZE * X;
+
+	const initialSetup = [new XYSelection(1, 3, 5, 8), new XYSelection(5, 1, 8, 6)];
+
+	// Whether the current selection matches any targets.
+	let matchingTarget = false;
 
 	let grid: CellData[][] = [];
 
@@ -23,8 +29,17 @@
 	for (let i = 0; i < X; i++) {
 		grid[i] = [];
 		for (let j = 0; j < Y; j++) {
+			let on = false;
+
+			for (const rects of initialSetup) {
+				if (rects.contains(i, j)) {
+					on = true;
+					break;
+				}
+			}
+
 			grid[i][j] = {
-				on: true,
+				on,
 				removed: false,
 				selected: false
 			};
@@ -38,6 +53,16 @@
 
 	let currentSelection: XYSelection = new XYSelection();
 
+	function isValidSelection(selection: XYSelection) {
+		let isValid = true;
+		selection.iterate((x, y) => {
+			if (!grid[x][y].on || grid[x][y].removed) {
+				isValid = false;
+			}
+		});
+		return isValid;
+	}
+
 	function updateGridSelection() {
 		for (let i = 0; i < X; i++) {
 			for (let j = 0; j < Y; j++) {
@@ -45,6 +70,23 @@
 			}
 		}
 		grid = grid;
+
+		// Check targets.
+		const size = currentSelection.size;
+		let foundMatch: boolean = false;
+		for (let target of targets) {
+			if (target.completed) {
+				continue;
+			}
+			if (!foundMatch && target.value == size) {
+				target.match = true;
+				foundMatch = true;
+			} else {
+				target.match = false;
+			}
+		}
+		targets = targets;
+		matchingTarget = foundMatch;
 	}
 
 	function onCellDown(x: number, y: number) {
@@ -62,31 +104,36 @@
 		}
 
 		end = { x, y };
-		currentSelection.update(start, end);
 
-		// Update targets
-		const size = currentSelection.size;
-		let foundMatch: boolean = false;
-		for (let target of targets) {
-			if (target.completed) {
-				continue;
-			}
-			if (!foundMatch && target.value == size) {
-				target.match = true;
-				foundMatch = true;
+		// Validate selection first. Only update the selection if it's valid.
+		const tempSelection = currentSelection.copy();
+		tempSelection.update(start, end);
+		console.log(tempSelection, currentSelection);
+		if (isValidSelection(tempSelection)) {
+			currentSelection.updateFrom(tempSelection);
+		} else {
+			// Try updating the X coordinate only.
+			let y = end.y > start.y ? currentSelection.maxY : currentSelection.minY;
+
+			tempSelection.update(start, { x: end.x, y });
+			if (isValidSelection(tempSelection)) {
+				currentSelection.updateFrom(tempSelection);
 			} else {
-				target.match = false;
+				// Try updating Y coordinate.
+				tempSelection.update(start, { x: currentSelection.endX, y: end.y });
+				if (isValidSelection(tempSelection)) {
+					currentSelection.updateFrom(tempSelection);
+				}
 			}
 		}
-		targets = targets;
+
+		currentSelection = currentSelection;
 
 		updateGridSelection();
 	}
 
 	function onCellUp() {
 		isDown = false;
-
-		currentSelection.iterate((x, y) => (grid[x][y].removed = true));
 
 		// Resolve targets.
 		let matchFound = false;
@@ -96,6 +143,11 @@
 				matchFound = true;
 			}
 			target.match = false;
+		}
+
+		if (matchFound) {
+			// Remove the cells.
+			currentSelection.iterate((x, y) => (grid[x][y].removed = true));
 		}
 
 		currentSelection.reset();
@@ -126,10 +178,22 @@
 	}
 </script>
 
+<div class="mt-10 m-auto flex justify-center gap-8">
+	{#each targets as target, i (target)}
+		<Target {target} />
+	{/each}
+</div>
+
 <div class="wrapper">
 	{#each grid as row, x}
 		{#each row as cellData, y}
-			<Cell {x} {y} {cellData} />
+			<Cell
+				{x}
+				{y}
+				{cellData}
+				{matchingTarget}
+				size={isDown && start && x == start.x && y == start.y ? currentSelection.size : 0}
+			/>
 		{/each}
 	{/each}
 	<div
@@ -157,11 +221,9 @@
 	/>
 </div>
 
-<div>
-	{#each targets as target, i (target)}
-		<div>{target.value} {target.match}</div>
-	{/each}
-</div>
+{#key currentSelection}
+	<div>{JSON.stringify(currentSelection)}</div>
+{/key}
 
 <style>
 	.wrapper {
@@ -170,7 +232,7 @@
 		flex-direction: column;
 		grid-auto-flow: column;
 		border: 1px solid red;
-		width: 200px;
+		width: 302px;
 		grid-template-columns: repeat(10, 1fr);
 		grid-template-rows: repeat(10, 1fr);
 		position: relative;
@@ -182,5 +244,17 @@
 		height: 100%;
 		top: 0;
 		left: 0;
+	}
+
+	:global(html) {
+		margin: 0;
+		padding: 0;
+		overflow: hidden;
+	}
+
+	:global(body) {
+		margin: 0;
+		padding: 0;
+		overflow: hidden;
 	}
 </style>

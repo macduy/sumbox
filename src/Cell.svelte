@@ -1,32 +1,69 @@
 <script lang="ts">
 	import type { CellData } from '$lib/types/cell';
+	import Page from './routes/+page.svelte';
 
 	export let x: number;
 	export let y: number;
 	export let cellData: CellData;
+	export let matchingTarget: boolean;
+	export let size: number = 0;
+
+	$: stateClass = evaluateClass(cellData, matchingTarget);
+
+	function evaluateClass(cellData: CellData, matchingTarget: boolean) {
+		if (!cellData.on || cellData.removed) {
+			return 'off';
+		}
+		if (!cellData.selected) {
+			return 'normal';
+		}
+		if (matchingTarget) {
+			return 'active-match';
+		}
+		return 'active-no-match';
+	}
 </script>
 
-<div
-	class="box"
-	role="none"
-	class:active={cellData.on && cellData.selected}
-	class:off={!cellData.on || cellData.removed}
-/>
+<div class="box {stateClass}" class:showSize={size > 0} role="none">
+	{#if size > 0}
+		{size}
+	{/if}
+</div>
 
 <style>
 	.box {
+		border-radius: 8px;
 		user-select: none;
-		background-color: blue;
-		border: 1px solid green;
-		width: 20px;
-		height: 20px;
-	}
+		background-color: white;
+		width: 30px;
+		height: 30px;
+		color: white;
+		text-align: center;
 
-	.active {
-		background-color: yellow;
+		transition: background-color 0.3s, border-width 0.15s, border-radius 0.35s, border-color 0.1s,
+			transform 0.3s;
 	}
 
 	.off {
-		background-color: white;
+		transform: scale(0);
+	}
+
+	.normal {
+		background-color: grey;
+		border: 4px solid white;
+	}
+
+	.active-no-match {
+		background-color: red;
+		border: 3px solid white;
+	}
+
+	.active-match {
+		background-color: green;
+		border: 2px solid white;
+	}
+
+	.showSize {
+		border-width: 1px !important;
 	}
 </style>
