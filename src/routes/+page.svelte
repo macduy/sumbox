@@ -230,7 +230,7 @@
 	/>
 </div>
 
-<div class="flex justify-center gap-2">
+<div class="flex justify-center gap-2 flex-wrap p-2">
 	<button
 		class="bg-transparent text-blue-700 font-semibold py-2 px-4 border border-blue-500 rounded"
 		on:click={reset}>Reset</button
