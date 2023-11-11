@@ -15,7 +15,7 @@ export const LEVELS: LevelSpec[] = [
 	},
 	{
 		name: 'Islands',
-		targets: [9, 24, 8],
+		targets: [8, 9, 24],
 		rects: [
 			[2, 2, 4, 4],
 			[6, 1, 9, 6],
@@ -54,7 +54,7 @@ export const LEVELS: LevelSpec[] = [
 	},
 	{
 		name: 'Box',
-		targets: [9, 15, 6, 6],
+		targets: [6, 6, 9, 15],
 		rects: [
 			[3, 2, 5, 4],
 			[3, 5, 7, 7],
@@ -64,7 +64,7 @@ export const LEVELS: LevelSpec[] = [
 	},
 	{
 		name: 'Peekabo',
-		targets: [20, 20, 8, 12],
+		targets: [8, 12, 20, 20],
 		rects: [
 			[1, 1, 5, 4],
 			[6, 0, 7, 9],
@@ -86,7 +86,7 @@ export const LEVELS: LevelSpec[] = [
 	},
 	{
 		name: 'Duck',
-		targets: [8, 24, 12, 10, 10, 7, 7, 14],
+		targets: [8, 10, 10, 12, 7, 7, 14, 24],
 		rects: [
 			[1, 2, 4, 3],
 			[5, 1, 8, 6],
@@ -100,7 +100,7 @@ export const LEVELS: LevelSpec[] = [
 	},
 	{
 		name: 'Block',
-		targets: [24, 12, 16, 9, 8],
+		targets: [8, 9, 12, 16, 24],
 		rects: [
 			[1, 1, 3, 8],
 			[4, 3, 7, 5],
