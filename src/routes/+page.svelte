@@ -216,7 +216,7 @@
 	Level {currentLevel.number}: {currentLevel.name}
 </div>
 
-<div class="mt-4 m-auto flex justify-center gap-8">
+<div class="mt-4 m-auto flex justify-center gap-8 flex-wrap p-4">
 	{#each targets as target, i (target)}
 		<Target {target} />
 	{/each}
