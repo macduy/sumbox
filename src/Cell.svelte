@@ -24,48 +24,66 @@
 	}
 </script>
 
-<div class="box inline-block align-middle {stateClass}" class:showSize={size > 0} role="none">
-	{#if size > 0}
-		{size}
-	{/if}
+<div class="cell flex justify-center">
+	<div class="box inline-block align-middle {stateClass}" class:showSize={size > 0} role="none">
+		{#if size > 0}
+			{size}
+		{/if}
+	</div>
 </div>
 
-<style>
-	.box {
+<style lang="less">
+	@import './shared.less';
+
+	@cellSize: 30px;
+
+	.cell {
 		pointer-events: none;
-		border-radius: 12px;
+		width: @cellSize;
+		height: @cellSize;
+	}
+
+	.box {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		align-self: center;
+		border-radius: 6px;
 		user-select: none;
 		background-color: white;
-		width: 30px;
-		height: 30px;
 		color: white;
 		text-align: center;
-
 		transition: background-color 0.3s, border-width 0.15s, border-radius 0.35s, border-color 0.1s,
-			transform 0.3s;
+			transform 0.3s, width 0.3s, height 0.3s;
 	}
 
 	.off {
-		border-radius: 0px;
-		transform: scale(0);
+		width: 0px;
+		height: 0px;
 	}
 
 	.normal {
 		background-color: grey;
-		border: 4px solid white;
+		width: 20px;
+		height: 20px;
 	}
 
 	.active-no-match {
+		border-radius: 1px;
 		background-color: red;
-		border: 3px solid white;
+		width: 22px;
+		height: 22px;
 	}
 
 	.active-match {
+		border-radius: 3px;
 		background-color: green;
-		border: 2px solid white;
+		width: 22px;
+		height: 22px;
 	}
 
 	.showSize {
-		border-width: 1px !important;
+		width: 26px;
+		height: 26px;
 	}
 </style>

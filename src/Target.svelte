@@ -8,26 +8,26 @@
 	{target.value}
 </div>
 
-<style>
+<style lang="less">
+	@import './shared.less';
 	.target {
+		.depth-text(#e6e6e6, #555555, 2px);
 		display: flex;
-		width: 40px;
-		height: 40px;
-		font-weight: bold;
-		color: white;
-		font-size: 1.2em;
-		background: grey;
+		font-size: 30px;
+		height: 50px;
 		text-align: center;
 		align-items: center;
 		justify-content: center;
+
+		transition: all 0.2s;
 	}
 
 	.match {
-		background-color: green;
-		transform: scale(1.1);
+		.depth-text(rgb(39, 172, 99), 2px, 4px) !important;
+		font-size: 40px;
 	}
 
 	.completed {
-		background-color: darkgreen;
+		.depth-text(rgb(39, 172, 99), 2px) !important;
 	}
 </style>

@@ -237,7 +237,7 @@
 	>
 	{#each LEVELS as level, i (i)}
 		<button
-			class="bg-transparent text-blue-700 font-semibold py-2 px-4 border border-blue-500 rounded"
+			class="bg-transparent text-blue-700 py-2 px-4 border border-blue-500 rounded"
 			on:click={() => (currentLevel = level)}>Level {i + 1}</button
 		>
 	{/each}
@@ -255,7 +255,6 @@
 		display: grid;
 		flex-direction: column;
 		grid-auto-flow: column;
-		border: 1px solid red;
 		width: 302px;
 		grid-template-columns: repeat(10, 1fr);
 		grid-template-rows: repeat(10, 1fr);

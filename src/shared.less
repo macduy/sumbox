@@ -1,0 +1,23 @@
+.depth-text(@color, @depth: 4px, @glow: 0px) {
+  @darkerColor: saturate(darken(@color, 20%), 5%);
+  .depth-text(@color, @darkerColor, @depth, @glow);
+}
+
+.depth-text(@color, @darkerColor, @depth: 4px, @glow: 0px) {
+  @outline: 1px;
+  color: @color;
+  -webkit-text-stroke: 1px @darkerColor;
+  text-shadow:
+      0.5px @depth 0 @darkerColor,
+      -0.5px @depth 0 @darkerColor,
+      0 0 @glow @color;
+  // text-shadow:
+  //     -@outline @depth 0 @darkerColor,
+  //     @outline @depth 0 @darkerColor,
+  //     @outline 0 0 @darkerColor,
+  //     -@outline 0 0 @darkerColor,
+  //     0 @outline 0 @darkerColor,
+  //     0 -@outline 0 @darkerColor,
+  //     @outline -@outline 0 @darkerColor,
+  //     -@outline -@outline 0 @darkerColor;
+}
