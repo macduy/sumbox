@@ -53,8 +53,9 @@
 		background-color: white;
 		color: white;
 		text-align: center;
-		transition: background-color 0.3s, border-width 0.15s, border-radius 0.35s, border-color 0.1s,
-			transform 0.3s, width 0.3s, height 0.3s;
+		padding-top: 2px;
+		transition: background-color 0.3s, border-radius 0.1s, border-color 0.2s, transform 0.3s,
+			width 0.2s, height 0.2s;
 	}
 
 	.off {
@@ -69,21 +70,27 @@
 	}
 
 	.active-no-match {
-		border-radius: 1px;
-		background-color: red;
+		border-radius: 4px;
+		background-color: rgb(223, 26, 26);
+		border-color: darken(rgb(223, 26, 26), 20%);
 		width: 22px;
 		height: 22px;
 	}
 
 	.active-match {
-		border-radius: 3px;
-		background-color: green;
+		border-radius: 6px;
+		background-color: #39b051;
+		border-color: darken(#39b051, 20%);
 		width: 22px;
 		height: 22px;
 	}
 
 	.showSize {
-		width: 26px;
-		height: 26px;
+		top: -1px;
+		border-radius: 8px;
+		width: 28px;
+		height: 29px;
+		border-bottom-width: 3px;
+		border-style: solid;
 	}
 </style>

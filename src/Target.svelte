@@ -23,11 +23,11 @@
 	}
 
 	.match {
-		.depth-text(rgb(39, 172, 99), 2px, 4px) !important;
+		.depth-text(#4ff571, 2px, 6px) !important;
 		font-size: 40px;
 	}
 
 	.completed {
-		.depth-text(rgb(39, 172, 99), 2px) !important;
+		.depth-text(#68ca1f, 2px) !important;
 	}
 </style>

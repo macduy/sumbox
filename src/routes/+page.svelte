@@ -7,12 +7,14 @@
 	import type { TargetData } from '$lib/types/target';
 
 	import Cell from '../Cell.svelte';
+	import LevelComplete from '../LevelComplete.svelte';
 	import Target from '../Target.svelte';
+	import Tutorial from '../Tutorial.svelte';
 
 	// Level editor stuff
 	const urlParams = new URLSearchParams(window.location.search);
 	export const isLevelEditorEnabled = urlParams.has('enableLevelEditor');
-	let levelEditor: LevelSpec = { targets: [], rects: [] };
+	let levelEditor: LevelSpec = { name: '', targets: [], rects: [] };
 
 	const CELL_SIZE = 30;
 	const GRID_HEIGHT = CELL_SIZE * Y;
@@ -21,7 +23,11 @@
 	// Whether the current selection matches any targets.
 	let matchingTarget = false;
 
-	let currentLevel: LevelSpec = isLevelEditorEnabled ? LEVEL_EDITOR_META : LEVELS[0];
+	let showTutorial = true;
+
+	let currentLevelIndex = 0;
+
+	$: currentLevel = isLevelEditorEnabled ? LEVEL_EDITOR_META : LEVELS[currentLevelIndex];
 
 	$: {
 		setupGameFor(currentLevel);
@@ -34,8 +40,8 @@
 	}
 
 	function setupGameFor(level: LevelSpec) {
-		console.log('Setup game');
 		setupGame(level, grid, targets);
+		levelComplete = false;
 	}
 
 	// Game state
@@ -47,11 +53,13 @@
 
 	let isDown: boolean = false;
 
+	let levelComplete: boolean = false;
+
 	let currentSelection: XYSelection = new XYSelection();
 
 	function reset() {
 		currentLevel = currentLevel;
-		levelEditor = { targets: [], rects: [] };
+		levelEditor = { name: '', targets: [], rects: [] };
 	}
 
 	function isValidSelection(selection: XYSelection) {
@@ -92,6 +100,7 @@
 	}
 
 	function onCellDown(x: number, y: number) {
+		showTutorial = false;
 		isDown = true;
 		start = { x, y };
 		end = { x, y };
@@ -161,6 +170,22 @@
 
 		currentSelection.reset();
 		updateGridSelection();
+
+		evalEndLevel();
+	}
+
+	function evalEndLevel() {
+		let incomplete = 0;
+		for (let target of targets) {
+			if (!target.completed) {
+				incomplete++;
+			}
+		}
+
+		if (incomplete == 0) {
+			// Level is completed.
+			setTimeout(() => (levelComplete = true), 600);
+		}
 	}
 
 	function clampX(x: number): number {
@@ -187,7 +212,11 @@
 	}
 </script>
 
-<div class="mt-10 m-auto flex justify-center gap-8">
+<div class="mt-8 text-center text-sky-400">
+	Level {currentLevel.number}: {currentLevel.name}
+</div>
+
+<div class="mt-4 m-auto flex justify-center gap-8">
 	{#each targets as target, i (target)}
 		<Target {target} />
 	{/each}
@@ -205,6 +234,9 @@
 			/>
 		{/each}
 	{/each}
+	{#if showTutorial}
+		<Tutorial />
+	{/if}
 	<div
 		class="interactor"
 		role="none"
@@ -230,17 +262,22 @@
 	/>
 </div>
 
+<LevelComplete
+	on:nextLevel={() => currentLevelIndex++}
+	show={levelComplete}
+	showNext={currentLevelIndex < LEVELS.length - 1}
+/>
+
 <div class="flex justify-center gap-2 flex-wrap p-2">
-	<button
-		class="bg-transparent text-blue-700 font-semibold py-2 px-4 border border-blue-500 rounded"
-		on:click={reset}>Reset</button
+	<button class="button" on:click={reset}>Reset</button>
+	<button disabled={currentLevelIndex == 0} class="button" on:click={() => currentLevelIndex--}
+		>Previous level</button
 	>
-	{#each LEVELS as level, i (i)}
-		<button
-			class="bg-transparent text-blue-700 py-2 px-4 border border-blue-500 rounded"
-			on:click={() => (currentLevel = level)}>Level {i + 1}</button
-		>
-	{/each}
+	<button
+		disabled={currentLevelIndex == LEVELS.length - 1}
+		class="button"
+		on:click={() => currentLevelIndex++}>Next level</button
+	>
 </div>
 
 {#if isLevelEditorEnabled}
@@ -249,16 +286,17 @@
 	</pre>
 {/if}
 
-<style>
+<style lang="less">
 	.wrapper {
 		margin: 20px auto;
 		display: grid;
 		flex-direction: column;
 		grid-auto-flow: column;
-		width: 302px;
-		grid-template-columns: repeat(10, 1fr);
-		grid-template-rows: repeat(10, 1fr);
+		width: 360px; /** Cell size * X */
+		grid-template-columns: repeat(12, 1fr);
+		grid-template-rows: repeat(16, 1fr);
 		position: relative;
+		border: 1px solid #f0f0f0;
 	}
 
 	.interactor {
@@ -279,5 +317,24 @@
 		margin: 0;
 		padding: 0;
 		overflow: hidden;
+	}
+
+	:global(.button) {
+		@color: rgb(203, 212, 216);
+		border-radius: 4px;
+		background: @color;
+		border: 1px solid darken(@color, 30%);
+		border-bottom-width: 4px;
+		margin-right: 1px;
+		padding: 0.1em 0.3em;
+
+		&:active {
+			background-color: khaki;
+			border-color: darken(khaki, 30%);
+			border-bottom-width: 2px;
+			margin-bottom: 2px;
+			position: relative;
+			top: 2px;
+		}
 	}
 </style>

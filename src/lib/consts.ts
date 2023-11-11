@@ -1,2 +1,2 @@
-export const X = 10;
-export const Y = 10;
+export const X = 12;
+export const Y = 16;
