@@ -86,7 +86,7 @@ export const LEVELS: LevelSpec[] = [
 	},
 	{
 		name: 'Duck',
-		targets: [8, 10, 10, 12, 7, 7, 14, 24],
+		targets: [10, 10, 12, 7, 7, 8, 14, 24],
 		rects: [
 			[1, 2, 4, 3],
 			[5, 1, 8, 6],
