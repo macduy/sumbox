@@ -8,7 +8,7 @@
 
 	import Cell from '../Cell.svelte';
 	import LevelComplete from '../LevelComplete.svelte';
-	import Target from '../Target.svelte';
+	import Targets from '../Targets.svelte';
 	import Tutorial from '../Tutorial.svelte';
 
 	// Level editor stuff
@@ -216,11 +216,7 @@
 	Level {currentLevel.number}: {currentLevel.name}
 </div>
 
-<div class="m-auto flex justify-center gap-4 flex-wrap p-2">
-	{#each targets as target, i (target)}
-		<Target {target} />
-	{/each}
-</div>
+<Targets {targets} {matchingTarget} />
 
 <div class="wrapper">
 	{#each grid as row, x}
