@@ -212,11 +212,11 @@
 	}
 </script>
 
-<div class="mt-8 text-center text-sky-400">
+<div class="mt-4 text-center text-sky-400">
 	Level {currentLevel.number}: {currentLevel.name}
 </div>
 
-<div class="mt-4 m-auto flex justify-center gap-8 flex-wrap p-4">
+<div class="m-auto flex justify-center gap-4 flex-wrap p-2">
 	{#each targets as target, i (target)}
 		<Target {target} />
 	{/each}
@@ -294,7 +294,7 @@
 		grid-auto-flow: column;
 		width: 360px; /** Cell size * X */
 		grid-template-columns: repeat(12, 1fr);
-		grid-template-rows: repeat(16, 1fr);
+		grid-template-rows: repeat(14, 1fr);
 		position: relative;
 		border: 1px solid #f0f0f0;
 	}
