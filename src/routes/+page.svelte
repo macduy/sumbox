@@ -5,6 +5,7 @@
 	import { setupGame, type LevelSpec } from '$lib/types/level';
 	import { XYSelection } from '$lib/types/selection';
 	import type { TargetData } from '$lib/types/target';
+	import type { UndoStep } from '$lib/types/undo';
 
 	import Cell from '../Cell.svelte';
 	import LevelComplete from '../LevelComplete.svelte';
@@ -34,6 +35,8 @@
 		forceRefresh();
 	}
 
+	let undoStack: UndoStep[] = [];
+
 	function forceRefresh() {
 		grid = grid;
 		targets = targets;
@@ -60,6 +63,22 @@
 	function reset() {
 		currentLevel = currentLevel;
 		levelEditor = { name: '', targets: [], rects: [] };
+		undoStack = [];
+	}
+
+	function undo() {
+		const lastStep = undoStack.pop();
+		if (!lastStep) {
+			return;
+		}
+
+		if (lastStep.matchedTarget) {
+			lastStep.matchedTarget.completed = false;
+		}
+
+		lastStep.selection.iterate((x, y) => (grid[x][y].removed = false));
+
+		targets = targets;
 	}
 
 	function isValidSelection(selection: XYSelection) {
@@ -143,31 +162,40 @@
 	function onCellUp() {
 		isDown = false;
 
-		// Resolve targets. If level editor is on, any selection is allowed.
-		let matchFound = isLevelEditorEnabled;
-		for (let target of targets) {
-			if (target.match) {
-				target.completed = true;
-				matchFound = true;
+		if (isValidSelection(currentSelection)) {
+			// Resolve targets - find the matching one and mark as completed.
+			// Mark all others as unmatched.
+			let matchedTarget: TargetData | undefined;
+			for (let target of targets) {
+				if (target.match) {
+					target.completed = true;
+					matchedTarget = target;
+				}
+				target.match = false;
 			}
-			target.match = false;
-		}
 
-		if (matchFound) {
-			// Remove the cells.
-			currentSelection.iterate((x, y) => (grid[x][y].removed = true));
-		}
+			if (matchedTarget || isLevelEditorEnabled) {
+				// Remove the cells.
+				currentSelection.iterate((x, y) => (grid[x][y].removed = true));
+			}
 
-		if (isLevelEditorEnabled) {
-			levelEditor.targets.push(currentSelection.size);
-			levelEditor.rects.push([
-				currentSelection.minX,
-				currentSelection.minY,
-				currentSelection.maxX,
-				currentSelection.maxY
-			]);
+			if (isLevelEditorEnabled) {
+				levelEditor.targets.push(currentSelection.size);
+				levelEditor.rects.push([
+					currentSelection.minX,
+					currentSelection.minY,
+					currentSelection.maxX,
+					currentSelection.maxY
+				]);
 
-			levelEditor = levelEditor;
+				levelEditor = levelEditor;
+			}
+
+			// Push onto undo stack.
+			undoStack.push({
+				selection: currentSelection.copy(),
+				matchedTarget
+			});
 		}
 
 		currentSelection.reset();
@@ -270,8 +298,11 @@
 	showNext={currentLevelIndex < LEVELS.length - 1}
 />
 
-<div class="flex justify-center gap-2 flex-wrap p-2">
+<div class="flex justify-center gap-2 flex-wrap p-1">
+	<button class="button" on:click={undo}>Undo</button>
 	<button class="button" on:click={reset}>Reset</button>
+</div>
+<div class="flex justify-center gap-2 flex-wrap p-1">
 	<button disabled={currentLevelIndex == 0} class="button" on:click={() => currentLevelIndex--}
 		>Previous level</button
 	>
