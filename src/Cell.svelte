@@ -48,6 +48,8 @@
 	}
 
 	.box {
+		position: relative;
+		top: 0px;
 		display: flex;
 		justify-content: center;
 		align-items: center;
@@ -59,7 +61,7 @@
 		text-align: center;
 		padding-top: 2px;
 		transition: background-color 0.3s, border-radius 0.1s, border-color 0.2s, transform 0.3s,
-			width 0.2s, height 0.2s;
+			width 0.2s, height 0.2s, top 0.2s, left 0.2s;
 	}
 
 	.off {
@@ -77,6 +79,7 @@
 	}
 
 	.active-no-match {
+		top: -1px;
 		border-radius: 4px;
 		background-color: rgb(223, 26, 26);
 		border-color: darken(rgb(223, 26, 26), 20%);
@@ -87,6 +90,7 @@
 	}
 
 	.active-match {
+		top: -1px;
 		border-radius: 4px;
 		background-color: #39b051;
 		border-color: darken(#39b051, 20%);
@@ -97,7 +101,7 @@
 	}
 
 	.showSize {
-		top: -1px;
+		top: -3px;
 		border-radius: 8px;
 		width: 28px;
 		height: 29px;

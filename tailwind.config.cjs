@@ -4,7 +4,7 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        'game': ["Bungee", "sans-serif"]
+        'game': ["Bungee", "sans-serif"],
       }
     },
   },
