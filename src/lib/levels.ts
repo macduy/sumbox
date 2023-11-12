@@ -35,10 +35,10 @@ export const LEVELS: LevelSpec[] = [
 		name: 'Blocks',
 		targets: [16, 10, 24],
 		rects: [
-			[1, 3, 5, 8],
-			[5, 1, 8, 6]
-		],
-		shift: { x: 1, y: 0 }
+			[6, 3, 9, 6],
+			[5, 1, 9, 2],
+			[2, 3, 5, 8]
+		]
 	},
 	{
 		name: 'Flower',

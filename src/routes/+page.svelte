@@ -283,7 +283,7 @@
 </div>
 
 {#if isLevelEditorEnabled}
-	<pre>
+	<pre class="text-white">
 	{JSON.stringify(levelEditor)}
 	</pre>
 {/if}
