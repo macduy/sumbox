@@ -7,7 +7,8 @@
 		<img alt="hand" src={hand} />
 	</div>
 	<div class="text font-exo2 text-white">
-		<b>How to Play:</b> <br />Draw rectangles of size matching targets above.
+		<b class="text-center block uppercase">How to Play</b> <br />Draw boxes of size matching targets
+		above.
 	</div>
 </div>
 
@@ -17,7 +18,7 @@
 	.text {
 		font-family: 'Exo 2', sans-serif;
 		color: saturate(lighten(@bg-color, 80%), 40%);
-		width: 300px;
+		width: 250px;
 		margin: auto;
 		position: relative;
 		top: 200px;
