@@ -80,6 +80,12 @@
 		lastStep.selection.iterate((x, y) => (grid[x][y].removed = false));
 
 		targets = targets;
+
+		if (isLevelEditorEnabled) {
+			levelEditor.targets.pop();
+			levelEditor.rects.pop();
+			levelEditor = levelEditor;
+		}
 	}
 
 	function isValidSelection(selection: XYSelection) {
@@ -192,11 +198,13 @@
 				levelEditor = levelEditor;
 			}
 
-			// Push onto undo stack.
-			undoStack.push({
-				selection: currentSelection.copy(),
-				matchedTarget
-			});
+			// Push onto undo stack if matched.
+			if (matchedTarget || isLevelEditorEnabled) {
+				undoStack.push({
+					selection: currentSelection.copy(),
+					matchedTarget
+				});
+			}
 		}
 
 		currentSelection.reset();
