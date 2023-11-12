@@ -63,6 +63,8 @@
 	}
 
 	function isValidSelection(selection: XYSelection) {
+		if (selection.size == 0) return false;
+
 		let isValid = true;
 		selection.iterate((x, y) => {
 			if (!grid[x][y].on || grid[x][y].removed) {
@@ -226,7 +228,11 @@
 				{y}
 				{cellData}
 				{matchingTarget}
-				size={isDown && start && x == start.x && y == start.y ? currentSelection.size : 0}
+				size={isDown && start && x == start.x && y == start.y
+					? isValidSelection(currentSelection)
+						? currentSelection.size
+						: 0
+					: undefined}
 			/>
 		{/each}
 	{/each}

@@ -6,7 +6,7 @@
 	export let y: number;
 	export let cellData: CellData;
 	export let matchingTarget: boolean;
-	export let size: number = 0;
+	export let size: number | undefined = undefined;
 
 	$: stateClass = evaluateClass(cellData, matchingTarget);
 
@@ -25,8 +25,12 @@
 </script>
 
 <div class="cell flex justify-center">
-	<div class="box inline-block align-middle {stateClass}" class:showSize={size > 0} role="none">
-		{#if size > 0}
+	<div
+		class="box inline-block align-middle {stateClass}"
+		class:showSize={size !== undefined}
+		role="none"
+	>
+		{#if size}
 			{size}
 		{/if}
 	</div>
@@ -59,8 +63,8 @@
 	}
 
 	.off {
-		background-color: black;
-		border-color: black;
+		background-color: darken(@bg-color, 5%);
+		border-color: darken(@bg-color, 10%);
 		width: 0px;
 		height: 0px;
 	}

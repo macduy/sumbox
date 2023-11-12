@@ -48,6 +48,9 @@ export class XYSelection {
 	}
 
 	get size(): number {
+		if (this.minX == -1 || this.maxX == -1 || this.minY == -1 || this.maxY == -1) {
+			return 0;
+		}
 		return (this.maxX - this.minX + 1) * (this.maxY - this.minY + 1);
 	}
 
