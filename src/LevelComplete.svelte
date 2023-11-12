@@ -23,7 +23,7 @@
 	@import './shared.less';
 
 	.outer {
-		background-color: rgba(100, 100, 100, 20%);
+		background-color: rgba(0, 0, 0, 80%);
 		transition: all;
 		position: absolute;
 		top: 0px;
@@ -47,11 +47,11 @@
 		display: inline-block;
 		position: relative;
 		border-radius: 20px;
-		background-color: white;
+		background-color: hsla(222.1, 29%, 11.6%, 30%);
+		border: 1px solid hsl(222.1, 29%, 30%);
 		margin: auto;
-		padding: 10px;
+		padding: 20px 30px;
 		text-align: center;
-		box-shadow: 0 0 50px 50px white;
 	}
 
 	.complete {
