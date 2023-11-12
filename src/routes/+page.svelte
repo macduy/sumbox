@@ -45,6 +45,7 @@
 	function setupGameFor(level: LevelSpec) {
 		setupGame(level, grid, targets);
 		levelComplete = false;
+		undoStack = [];
 	}
 
 	// Game state
