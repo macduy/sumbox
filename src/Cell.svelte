@@ -59,12 +59,15 @@
 	}
 
 	.off {
+		background-color: black;
+		border-color: black;
 		width: 0px;
 		height: 0px;
 	}
 
 	.normal {
-		background-color: grey;
+		background-color: @cell-normal;
+		border-color: darken(@cell-normal, 20%);
 		width: 20px;
 		height: 20px;
 	}
@@ -75,14 +78,18 @@
 		border-color: darken(rgb(223, 26, 26), 20%);
 		width: 22px;
 		height: 22px;
+		border-bottom-width: 2px;
+		border-style: solid;
 	}
 
 	.active-match {
-		border-radius: 6px;
+		border-radius: 4px;
 		background-color: #39b051;
 		border-color: darken(#39b051, 20%);
 		width: 22px;
 		height: 22px;
+		border-bottom-width: 2px;
+		border-style: solid;
 	}
 
 	.showSize {

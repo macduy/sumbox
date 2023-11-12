@@ -1,3 +1,11 @@
+@bg-color: hsl(222.1, 29%, 11.6%);
+@target-color: hsl(222.1, 40%, 95.6%);
+@target-color-darker: hsl(222.1, 29%, 50.6%);
+
+@cell-normal: hsl(222.1, 32%, 40.6%);
+@match-color: #39b051;
+
+
 .depth-text(@color, @depth: 4px, @glow: 0px) {
   @darkerColor: saturate(darken(@color, 20%), 5%);
   .depth-text(@color, @darkerColor, @depth, @glow);

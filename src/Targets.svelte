@@ -27,7 +27,7 @@
 	}
 
 	.target {
-		.depth-text(#e6e6e6, #555555, 2px);
+		.depth-text(@target-color, @target-color-darker, 2px);
 		display: block;
 		font-size: 30px;
 		width: 50px;
@@ -41,13 +41,13 @@
 	}
 
 	.match {
-		.depth-text(#4ff571, 2px, 6px) !important;
+		.depth-text(#aef4b2, #4b945a, 2px, 6px) !important;
 		font-size: 40px;
 		padding-top: 0px;
 		width: 70px;
 	}
 
 	.completed {
-		.depth-text(#68ca1f, 2px) !important;
+		.depth-text(@match-color, 2px) !important;
 	}
 </style>

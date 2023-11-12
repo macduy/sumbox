@@ -283,6 +283,8 @@
 {/if}
 
 <style lang="less">
+	@import '../shared.less';
+
 	.wrapper {
 		margin: 20px auto;
 		display: grid;
@@ -292,7 +294,6 @@
 		grid-template-columns: repeat(12, 1fr);
 		grid-template-rows: repeat(14, 1fr);
 		position: relative;
-		border: 1px solid #f0f0f0;
 	}
 
 	.interactor {
@@ -313,6 +314,7 @@
 		margin: 0;
 		padding: 0;
 		overflow: hidden;
+		background: @bg-color;
 	}
 
 	:global(.button) {
